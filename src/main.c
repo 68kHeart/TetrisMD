@@ -242,9 +242,9 @@ void GamePlay()
     VDP_clearPlan(PLAN_A, TRUE);
     VDP_clearPlan(PLAN_B, TRUE);
 
-    //³õÊ¼»¯SDGKµÄspriteÒıÇæ
+    //åˆå§‹åŒ–SDGKçš„spriteå¼•æ“
     SPR_init();
-    //³õÊ¼»¯...
+    //åˆå§‹åŒ–...
     BlockBag_Init();
     Board_Init(&board1);
     Block_Init(&block1, &board1);
@@ -400,7 +400,7 @@ void joyEventOnGameOver(u16 joy, u16 changed, u16 state)
 
 }
 
-//ÊÖ±ú¿ØÖÆ´¦Àí
+//æ‰‹æŸ„æ§åˆ¶å¤„ç†
 void joyEventOnGamePlay(u16 joy, u16 changed, u16 state) //state = pressed , changed = released
 {
 
@@ -494,12 +494,12 @@ void joyEventOnGamePlay(u16 joy, u16 changed, u16 state) //state = pressed , cha
             }
 
         }
-        else if (state & BUTTON_B)
+        else if (changed & state & BUTTON_B)
         {
             if (block1.state == IDLE)
                 currCmd |= CMD_ROTATE_LEFT;
         }
-        else if (state & BUTTON_C)
+        else if (changed & state & BUTTON_C)
         {
             if (block1.state == IDLE)
                 currCmd |= CMD_ROTATE_RIGHT;
@@ -512,12 +512,12 @@ static void UpdatePhysic()
 {
     if (block1.state == IDLE)
     {
-        //ÏòÓÒÒÆ¶¯
+        //å‘å³ç§»åŠ¨
         if (block1.xDir == 1)
         {
             if (block1.speedX < 0)
             {
-                //¸Õ´Ó×ó±ßÇĞ»»¹ıÀ´
+                //åˆšä»å·¦è¾¹åˆ‡æ¢è¿‡æ¥
                 block1.speedX = 0;
             }
 
@@ -527,14 +527,14 @@ static void UpdatePhysic()
                 currCmd |= CMD_MOVE_RIGHT;
 
             }
-            //ÀÛ¼Ó¼ÓËÙ¶È
+            //ç´¯åŠ åŠ é€Ÿåº¦
             block1.speedX += block1.accelX;
         }
         else if (block1.xDir == -1)
         {
             if (block1.speedX > 0)
             {
-                //¸Õ´ÓÓÒ±ßÇĞ»»¹ıÀ´
+                //åˆšä»å³è¾¹åˆ‡æ¢è¿‡æ¥
                 block1.speedX = 0;
             }
 
@@ -544,14 +544,14 @@ static void UpdatePhysic()
                 block1.speedX = 0;
                 currCmd |= CMD_MOVE_LEFT;
             }
-            //ÀÛ¼Ó¼ÓËÙ¶È
+            //ç´¯åŠ åŠ é€Ÿåº¦
             block1.speedX -= block1.accelX;
 
         }
 
         if (!block1.isLock)
         {
-             //²»ÔÚËø¶¨Ê±×Ô¶¯ÏÂ½µ
+             //ä¸åœ¨é”å®šæ—¶è‡ªåŠ¨ä¸‹é™
             if (block1.autoFallSpeed >= block1.autoFallMaxSpeed)
             {
                 block1.autoFallSpeed = 0;
@@ -566,21 +566,21 @@ static void UpdatePhysic()
     {
         if (block1.lockDelay != 0 && block1.isLock)
         {
-            //¿ªÊ¼Ëø¶¨²¢µ¹¼ÆÊ±¡£
+            //å¼€å§‹é”å®šå¹¶å€’è®¡æ—¶ã€‚
             block1.lockDelay--;
             //Block_Moving(&block1, &board1);
 
         }
         else if (block1.lockDelay == 0 && block1.isLock)
         {
-            //¿ªÊ¼Ëø¶¨²¢Íê³Éµ¹¼ÆÊ±£¬ÅĞ¶ÏÊÇ·ñ×ÅµØ£¬ÈçÊÇ¾ÍÖ±½Ó×ÅµØ£¬·ñÔòÈ¡ÏûËø¶¨¡£
+            //å¼€å§‹é”å®šå¹¶å®Œæˆå€’è®¡æ—¶ï¼Œåˆ¤æ–­æ˜¯å¦ç€åœ°ï¼Œå¦‚æ˜¯å°±ç›´æ¥ç€åœ°ï¼Œå¦åˆ™å–æ¶ˆé”å®šã€‚
             if (Block_CanMove(&block1, &board1, 0, 1))
             {
                 currCmd |= CMD_AUTO_FALL;
             }
             else
             {
-                //Ö±½Ó×ÅµØ¡£
+                //ç›´æ¥ç€åœ°ã€‚
                 currCmd |= CMD_LOCK;
                 block1.landType = NORMAL_LAND;
             }
@@ -588,14 +588,14 @@ static void UpdatePhysic()
 
         if (block1.actionCountInLock >= MAX_ACTION_IN_LOCK && block1.isLock)
         {
-            //¿ªÊ¼Ëø¶¨²¢Íê³Éµ¹¼ÆÊ±£¬ÅĞ¶ÏÊÇ·ñ×ÅµØ£¬ÈçÊÇ¾ÍÖ±½Ó×ÅµØ£¬·ñÔòÈ¡ÏûËø¶¨¡£
+            //å¼€å§‹é”å®šå¹¶å®Œæˆå€’è®¡æ—¶ï¼Œåˆ¤æ–­æ˜¯å¦ç€åœ°ï¼Œå¦‚æ˜¯å°±ç›´æ¥ç€åœ°ï¼Œå¦åˆ™å–æ¶ˆé”å®šã€‚
             if (Block_CanMove(&block1, &board1, 0, 1))
             {
                 currCmd |= CMD_AUTO_FALL;
             }
             else
             {
-                //Ö±½Ó×ÅµØ¡£
+                //ç›´æ¥ç€åœ°ã€‚
                 currCmd |= CMD_LOCK;
                 block1.landType = NORMAL_LAND;
             }
@@ -671,18 +671,18 @@ static void UpdatePhysic()
                 block1.visible = FALSE;
                 blockGhost1.visible = FALSE;
 
-                //¼ì²éÊÇ·ñÓĞÌî³äÂúµÄĞĞ
+                //æ£€æŸ¥æ˜¯å¦æœ‰å¡«å……æ»¡çš„è¡Œ
                 if (Board_FilledLineCount(&block1, &board1) != 0)
                 {
                     block1.state = CLEARING;
                     board1.clearLineDelay = 40;
-                    //²¥·ÅÏûĞĞ¶¯»­
+                    //æ’­æ”¾æ¶ˆè¡ŒåŠ¨ç”»
                      SND_startPlayPCM_XGM(SOUND_LINE_CLEAR, 10, SOUND_PCM_CH2);
 
                 }
                 else
                 {
-                    //ÒÑÍê³ÉÂäµØ ¼Ó·Ö
+                    //å·²å®Œæˆè½åœ° åŠ åˆ†
                     block1.state = REBORN;
                 }
 
@@ -714,7 +714,7 @@ static void UpdatePhysic()
                 u8 lineClearCount = Board_ClearLine(&block1, &board1);
                 board1.currLevelLineClear += lineClearCount;
                 board1.lineClearAmount += lineClearCount;
-                //ÏûĞĞµÃ·Ö
+                //æ¶ˆè¡Œå¾—åˆ†
                 if (lineClearCount == 1)
                 {
                     board1.currScore += 100;
@@ -883,7 +883,7 @@ void BlockRotateLeft()
         Block_GetRotationData(block1.rotationData, block1.currType, block1.rotationState);
         for (s16 i = 0; i < 5; i++)
         {
-            //½øĞĞÌßÇ½µÄ5´ÎÎ»ÒÆ³¢ÊÔ¡£
+            //è¿›è¡Œè¸¢å¢™çš„5æ¬¡ä½ç§»å°è¯•ã€‚
             if (Block_CanMove(&block1, &board1, block1.wallKickData[i].offsetX, block1.wallKickData[i].offsetY))
             {
                 stepTry = i + 1;
@@ -977,13 +977,13 @@ void BlockAutoFall()
 {
     if (Block_CanMove(&block1, &board1, 0, 1))
     {
-        //ÏÂÂäÒ»ĞĞ
+        //ä¸‹è½ä¸€è¡Œ
         Block_MoveOnBoard(&block1, 0, 1);
 
-        //ÂíÉÏÅĞ¶ÏÊÇ·ñÂäµØ----------------------------------
+        //é©¬ä¸Šåˆ¤æ–­æ˜¯å¦è½åœ°----------------------------------
         if (block1.canLockDelay)
         {
-            //ÖØÖÃlockDelay¼ÆÊ±Æ÷
+            //é‡ç½®lockDelayè®¡æ—¶å™¨
             block1.lockDelay = LOCK_DELAY_FRAMES;
             block1.isLock = FALSE;
             block1.actionCountInLock = 0;
@@ -1012,7 +1012,7 @@ void BlockAutoFall()
         }
         else
         {
-            //²»ÄÜÏÂÒÆÇÒËø¶¨ÎªÕæ
+            //ä¸èƒ½ä¸‹ç§»ä¸”é”å®šä¸ºçœŸ
             currCmd |= CMD_LOCK;
             block1.landType = NORMAL_LAND;
         }
